@@ -35,7 +35,7 @@ namespace Coterie.Api.Controllers
         }      
 
         [HttpPost]
-        public ActionResult<ItemResponse<StatewisePremiums>> GetTotalPremium([FromBody] PayloadRequest request)
+        public ActionResult<StatewisePremiums> GetTotalPremium([FromBody] PayloadRequest request)
         {
             ValidateRequest(request);
 
@@ -50,10 +50,7 @@ namespace Coterie.Api.Controllers
                 TransactionId = Guid.NewGuid().ToString()
             };
 
-            return new ItemResponse<StatewisePremiums>
-            {
-                Item = result
-            };
+            return result;
         }
 
         private void ValidateRequest(PayloadRequest request)
@@ -68,9 +65,9 @@ namespace Coterie.Api.Controllers
                 throw new InvalidOperationException($"{request.business} is invalid business");
             }
 
-            if (request.revenue < 0)
+            if (request.revenue < default(int))
             {
-                throw new InvalidOperationException($"{request.revenue} is invalid");
+                throw new InvalidOperationException($"{request.revenue} is invalid revenue");
             }
 
             foreach (var state in request.states)
@@ -79,7 +76,7 @@ namespace Coterie.Api.Controllers
                 {
                     throw new InvalidOperationException($"{state} is invalid state");
                 }
-            }            
+            }           
         }
     }
 }

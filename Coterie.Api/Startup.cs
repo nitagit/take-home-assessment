@@ -28,7 +28,6 @@ namespace Coterie.Api
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Coterie.Api", Version = "v1"});
             });
 
-            services.AddScoped<ITestService, TestService>();
             services.AddScoped<IRateService, RateService>();
         }
 

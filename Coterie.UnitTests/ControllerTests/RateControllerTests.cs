@@ -14,12 +14,14 @@ namespace Coterie.UnitTests.ControllerTests
             var builder = new Base().SetupService();
             var controller = builder.Build();
 
+            var request = TestData.request;
+            request.business = "Plumber";                
             var actual = controller.GetTotalPremium(TestData.request);
 
             // Assert
             var requestData = TestData.request;
             Assert.IsNotNull(actual);
-            var actualValue = actual.Value.Item;
+            var actualValue = actual.Value;
             Assert.That(actualValue.Business, Is.EqualTo(requestData.business));
             Assert.That(actualValue.Revenue, Is.EqualTo(requestData.revenue));
             Assert.That(actualValue.Premiums.Count, Is.GreaterThan(0));
