@@ -9,7 +9,7 @@ namespace Coterie.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class RateController : ControllerBase
+    public class RateController : CoterieBaseController
     {
         private readonly HashSet<string> _businesses = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase)
         {
@@ -35,7 +35,7 @@ namespace Coterie.Api.Controllers
         }      
 
         [HttpPost]
-        public StatewisePremiums GetTotalPremium([FromBody] PayloadRequest request)
+        public ActionResult<ItemResponse<StatewisePremiums>> GetTotalPremium([FromBody] PayloadRequest request)
         {
             ValidateRequest(request);
 
@@ -50,7 +50,10 @@ namespace Coterie.Api.Controllers
                 TransactionId = Guid.NewGuid().ToString()
             };
 
-            return result;
+            return new ItemResponse<StatewisePremiums>
+            {
+                Item = result
+            };
         }
 
         private void ValidateRequest(PayloadRequest request)
@@ -64,8 +67,13 @@ namespace Coterie.Api.Controllers
             {
                 throw new InvalidOperationException($"{request.business} is invalid business");
             }
-            
-            foreach(var state in request.states)
+
+            if (request.revenue < 0)
+            {
+                throw new InvalidOperationException($"{request.revenue} is invalid");
+            }
+
+            foreach (var state in request.states)
             {
                 if (!_states.Contains(state.ToLower()))
                 {

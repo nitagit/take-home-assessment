@@ -19,9 +19,10 @@ namespace Coterie.UnitTests.ControllerTests
             // Assert
             var requestData = TestData.request;
             Assert.IsNotNull(actual);
-            Assert.That(actual.Business, Is.EqualTo(requestData.business));
-            Assert.That(actual.Revenue, Is.EqualTo(requestData.revenue));
-            Assert.That(actual.Premiums.Count, Is.GreaterThan(0));
+            var actualValue = actual.Value.Item;
+            Assert.That(actualValue.Business, Is.EqualTo(requestData.business));
+            Assert.That(actualValue.Revenue, Is.EqualTo(requestData.revenue));
+            Assert.That(actualValue.Premiums.Count, Is.GreaterThan(0));
             builder.MockRateService.Verify(x => x.GetPremiums(It.IsAny<PayloadRequest>()), Times.AtLeastOnce);
         }
 
@@ -60,6 +61,20 @@ namespace Coterie.UnitTests.ControllerTests
 
             var request = TestData.request;
             request.states.Add("NY");
+
+            // Assert
+            Assert.Throws<InvalidOperationException>(() => controller.GetTotalPremium(request));
+            builder.MockRateService.Verify(x => x.GetPremiums(It.IsAny<PayloadRequest>()), Times.Never);
+        }
+
+        [Test]
+        public void GetTotalPremium_WhenRevenueIsNegative_ThrowsInvalidOperationException()
+        {
+            var builder = new Base();
+            var controller = builder.Build();
+
+            var request = TestData.request;
+            request.revenue = -1;
 
             // Assert
             Assert.Throws<InvalidOperationException>(() => controller.GetTotalPremium(request));
