@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/TakeHomeAssessment/v16
+/Coterie.Api/bin
+/Coterie.Api/obj
+/Coterie.UnitTests/bin
+/Coterie.UnitTests/obj
